@@ -42,7 +42,7 @@ void setup() {
 
 void loop()
 {
-  /*delay(2000); // wait
+  delay(2000); // wait
   for (pos = 0; pos <= 110; pos += 1) { // goes from 0 degrees to 110 degrees
     // in steps of 1 degree
    base_servo.write(pos);              // tell servo to go to position in variable 'pos' ie 0 degrees to 110 degrees
@@ -50,43 +50,21 @@ void loop()
   }
   delay(1000);
  
-for (pos = 60; pos <= 100; pos += 1) { // goes from 60 degrees to 100 degrees, for the right servo motor
+for (pos = 60; pos <= 135; pos += 1) { // goes from 60 degrees to 100 degrees, for the right servo motor
     // in steps of 1 degree
    right_servo.write(pos);              // tell servo to go to position in variable 'pos'
     delay(23);
   }
- for (pos = 170; pos >= 110; pos -= 1) {  // activates the left servo motor
+ for (pos = 170; pos >= 30; pos -= 1) {  // activates the left servo motor
    left_servo.write(pos);              
     delay(23);
   }
-
-  delay(2000); // adding delay to allow the PH senosr record the PH of the water
-
-  for (pos = 110; pos <= 170; pos += 1) { // goes from 110 degrees to 180 degrees
+for (pos = 135; pos <= 150; pos += 1) { // goes from 60 degrees to 100 degrees, for the right servo motor
     // in steps of 1 degree
-   left_servo.write(pos);              // tell servo to go to position in variable 'pos'
+   right_servo.write(pos);              // tell servo to go to position in variable 'pos'
     delay(23);
   }
-
-  delay(1000);
-
-  for (pos = 100; pos >= 60; pos -= 1) { 
-   right_servo.write(pos);              
-    delay(23);   
- }
-delay(2000);
- for (pos = 110; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
-    base_servo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(23);                       // waits 15 ms for the servo to reach the position
-  }*/
-
-//ph code
- /* pH_Value = analogRead(A0); //to calibrate the sensor
-  Voltage = pH_Value * (5.0 / 1023.0); 
-  Serial.println(Voltage); 
-  delay(500);*/
-
-  for(int i=0;i<10;i++){ 
+for(int i=0;i<10;i++){ 
  buffer_arr[i]=analogRead(A0);
  delay(30);
  }
@@ -105,9 +83,33 @@ delay(2000);
  float volt=(float)avgval*5.0/1024/6; 
 float ph_act = -5.70 * volt + calibration_value;
  
- Serial.println("pH Val: ");
- Serial.print(ph_act); // The PH sensor reading
- delay(1000);
+  delay(5000); // adding delay to allow the PH senosr record the PH of the water
+
+  for (pos = 30; pos <= 170; pos += 1) { // goes from 110 degrees to 180 degrees
+    // in steps of 1 degree
+   left_servo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(23);
+  }
+
+  delay(1000);
+
+  for (pos = 150; pos >= 60; pos -= 1) { 
+   right_servo.write(pos);              
+    delay(23);   
+ }
+delay(2000);
+ for (pos = 110; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+    base_servo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(23);                       // waits 15 ms for the servo to reach the position
+  }
+
+//ph code
+ /* pH_Value = analogRead(A0); //to calibrate the sensor
+  Voltage = pH_Value * (5.0 / 1023.0); 
+  Serial.println(Voltage); 
+  delay(500);*/
+
+
 
 
 
@@ -125,11 +127,12 @@ float ph_act = -5.70 * volt + calibration_value;
 //temprature sensor code in here.
 
 // Send the command to get temperatures
- /* sensors.requestTemperatures(); 
+ sensors.requestTemperatures(); 
 
   //print the temperature in Celsius
   Serial.print("Temperature: ");
   Serial.print(sensors.getTempCByIndex(0));
   //Serial.print((char)176);//shows degrees character
-  Serial.println("C  |  ");*/ }
- 
+  Serial.println("C  |  "); }
+
+  //yesterday 04th we added the ph sensor code inbtw the robotic arm code 
