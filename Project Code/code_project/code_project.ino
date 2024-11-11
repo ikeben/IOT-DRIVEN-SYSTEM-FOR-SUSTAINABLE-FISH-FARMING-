@@ -26,7 +26,7 @@ int pos = 0;    // variable to store the servo position
 int pH_Value;
 float Voltage;
 
-float calibration_value = 21.34+0.99; // for the ph sensor
+float calibration_value = 21.34; // for the ph sensor
 int phval = 0; 
 unsigned long int avgval; 
 int buffer_arr[10],temp;  // for the ph sensor
@@ -48,7 +48,7 @@ void loop()
    base_servo.write(pos);              // tell servo to go to position in variable 'pos' ie 0 degrees to 110 degrees
     delay(23);                       // waits 23 ms for the servo to reach the position also determines how fast it goesn 
   }
-  delay(1000);
+  //delay(1000);
  
 for (pos = 60; pos <= 135; pos += 1) { // goes from 60 degrees to 100 degrees, for the right servo motor
     // in steps of 1 degree
@@ -78,12 +78,21 @@ for(int i=0;i<10;i++){
  }
  }
  avgval=0;
- for(int i=2;i<8;i++)
+ for(int i=2;i<10;i++)
  avgval+=buffer_arr[i];
- float volt=(float)avgval*5.0/1024/6; 
+ float volt=(float)avgval*5.0/1024/8; 
 float ph_act = -5.70 * volt + calibration_value;
+//Serial.println("PH is ");
+Serial.println(ph_act);
+//Serial.println(volt);
+
+//temprature sensor code in here.
+
+// Send the command to get temperatures
+ sensors.requestTemperatures(); 
+
  
-  delay(5000); // adding delay to allow the PH senosr record the PH of the water
+ delay(5000); // adding delay to allow the PH senosr record the PH of the water
 
   for (pos = 30; pos <= 170; pos += 1) { // goes from 110 degrees to 180 degrees
     // in steps of 1 degree
@@ -91,13 +100,13 @@ float ph_act = -5.70 * volt + calibration_value;
     delay(23);
   }
 
-  delay(1000);
+ // delay(1000);
 
   for (pos = 150; pos >= 60; pos -= 1) { 
    right_servo.write(pos);              
     delay(23);   
  }
-delay(2000);
+//delay(2000);
  for (pos = 110; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
     base_servo.write(pos);              // tell servo to go to position in variable 'pos'
     delay(23);                       // waits 15 ms for the servo to reach the position
@@ -111,7 +120,13 @@ delay(2000);
 
 
 
+Serial.print("PH is ");
+Serial.println(ph_act);
 
+Serial.print("Temperature: ");
+Serial.print(sensors.getTempCByIndex(0));
+//Serial.print((char)176);//shows degrees character
+Serial.println("C  |  "); }
 
 
  
@@ -124,7 +139,7 @@ delay(2000);
 
 
 
-//temprature sensor code in here.
+/*//temprature sensor code in here.
 
 // Send the command to get temperatures
  sensors.requestTemperatures(); 
@@ -133,6 +148,6 @@ delay(2000);
   Serial.print("Temperature: ");
   Serial.print(sensors.getTempCByIndex(0));
   //Serial.print((char)176);//shows degrees character
-  Serial.println("C  |  "); }
+  Serial.println("C  |  "); }*/
 
   //yesterday 04th we added the ph sensor code inbtw the robotic arm code 
