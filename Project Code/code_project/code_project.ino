@@ -2,6 +2,7 @@
 BERNARD JOSEPH
 SAMUEL ELEMA
 */
+
 #define trig 19
 #define echo 21
 #define relay1 22 // Relay or LED connected to GPIO 22
@@ -39,8 +40,8 @@ void setup() {
   pinMode(relay1, OUTPUT); // Relay 1 control pin
   pinMode(relay2, OUTPUT); // Relay 2 control pin
 
-  sensors.begin();	// Start the temperature sensor library
-  Serial.begin(9600); // Initialize Serial for debugging
+  sensors.begin();         // Start the temperature sensor library
+  Serial.begin(9600);      // Initialize Serial for debugging
 }
 
 int measure_distance() {
@@ -103,22 +104,19 @@ void loop() {
   
   // Measure pH while dipped
   float phValue = measure_ph();
-  // Serial.print("pH Value: ");
-  // Serial.println(phValue);
 
   // Measure temperature
-  sensors.requestTemperatures();
-  float temperature = sensors.getTempCByIndex(0);
-  // Serial.print("Temperature: ");
-  // Serial.println(temperature);
+  float temperature = 0.0;
+  for (int i = 0; i < 30; i++) {
+    sensors.requestTemperatures(); // Request the sensor to read the temperature
+    temperature = sensors.getTempCByIndex(0); // Store the latest reading
+    delay(5); // Short delay between readings for stability
+  }
 
   // Measure distance
   int distance = measure_distance();
-  // Serial.print("Distance: ");
-  // Serial.println(distance);
 
-  delay(3000);
-
+  // Print values to the serial monitor
   Serial.print("pH Value: ");
   Serial.println(phValue);
 
@@ -128,35 +126,40 @@ void loop() {
   Serial.print("Distance: ");
   Serial.println(distance);
 
-  // Relay control logic
-  if (temperature <= 20.0 || temperature >= 33.0 || phValue <= 6.5 || phValue >= 9.0) {
-    digitalWrite(relay1, HIGH); // Turn ON relay1 if temperature and pH are in range
-    if (distance >= 14) {
-      digitalWrite(relay1, LOW); // Turn OFF relay1 if distance >= 15
-      digitalWrite(relay2, HIGH); // Turn ON relay2
-    } else if (distance <= 3) {
-      digitalWrite(relay2, LOW); // Turn OFF relay2 if distance <= 3
-    }
-  } else {
-    // Turn OFF both relays if conditions are not met
-    digitalWrite(relay1, LOW);
-    digitalWrite(relay2, LOW);
+// Relay control logic with debug
+if (temperature <= 20.0 || temperature >= 33.0 || phValue <= 6.5 || phValue >= 9.0) {
+    Serial.println("Critical condition: Temperature or pH out of range.");
+    Serial.println("Turning relay1 ON...");
+    digitalWrite(relay1, HIGH); // Turn ON the relay
+    break; // Exit the if block and continue to the next part of the loop
   }
 
-  // Return arm to its initial position
+if (distance >= 13) {
+    Serial.println("Desired water level reached. Turning relay1 OFF.");
+    digitalWrite(relay1, LOW); // Turn OFF the relay
+  }
+Serial.println("Turning relay2 ON");
 
+do {
+ digitalWrite(relay2, HIGH);
+ }while (distance !=3);
+
+if(distance <=3){
+  digitalWrite(relay2, LOW);
+}
+
+
+  // Return arm to its initial position
   for (int pos = 30; pos <= 170; pos++) {
     left_servo.write(pos);
     delay(23);
   }
-    for (int pos = 150; pos >= 135; pos -= 1) { //code swapped at 18/1124 23:16
+
+  for (int pos = 150; pos >= 60; pos -= 1) {
     right_servo.write(pos);
     delay(23);
   }
-  for (int pos = 135; pos >= 60; pos--) {
-    right_servo.write(pos);
-    delay(23);
-  }
+
   for (int pos = 110; pos >= 0; pos--) {
     base_servo.write(pos);
     delay(23);
