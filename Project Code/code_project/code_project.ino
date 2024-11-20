@@ -5,63 +5,54 @@ SAMUEL ELEMA
 
 #define trig 19
 #define echo 21
-#define relay1 22 // Relay or LED connected to GPIO 22
-#define relay2 23 // Relay or LED connected to GPIO 23
+#define relay1 22 // Relay for draining water
+#define relay2 23 // Relay for filling water
 
 #include <OneWire.h> // Library for the DS18B20 temperature sensor
 #include <DallasTemperature.h> // Library for the DS18B20 temperature sensor
 #include <ESP32Servo.h> // Library for the servo motor
 
-// Data wire is plugged into digital pin 18 for the temperature sensor
-#define ONE_WIRE_BUS 18
-
-// Setup a OneWire instance to communicate with any OneWire device
+#define ONE_WIRE_BUS 18 // Data wire for temperature sensor
 OneWire oneWire(ONE_WIRE_BUS);
-
-// Pass oneWire reference to DallasTemperature library
 DallasTemperature sensors(&oneWire);
 
-// Create servo objects for the robotic arm
 Servo base_servo;
 Servo right_servo;
 Servo left_servo;
 
-// Variables for pH sensor
 float calibration_value = 21.34; // Calibration value for the pH sensor
-int buf[10]; // Buffer for pH sensor readings
+int buf[10];
 
 void setup() {
-  base_servo.attach(15);  // Base servo connected to GPIO 15
-  right_servo.attach(2);  // Right servo connected to GPIO 2
-  left_servo.attach(4);   // Left servo connected to GPIO 4
+  base_servo.attach(15);
+  right_servo.attach(2);
+  left_servo.attach(4);
 
-  pinMode(trig, OUTPUT);   // Ultrasonic trigger pin
-  pinMode(echo, INPUT);    // Ultrasonic echo pin
-  pinMode(relay1, OUTPUT); // Relay 1 control pin
-  pinMode(relay2, OUTPUT); // Relay 2 control pin
+  pinMode(trig, OUTPUT);
+  pinMode(echo, INPUT);
+  pinMode(relay1, OUTPUT);
+  pinMode(relay2, OUTPUT);
 
-  sensors.begin();         // Start the temperature sensor library
-  Serial.begin(9600);      // Initialize Serial for debugging
+  sensors.begin();
+  Serial.begin(9600);
+
+  digitalWrite(relay1, LOW); // Ensure relays are OFF initially
+  digitalWrite(relay2, LOW);
 }
 
 int measure_distance() {
-  // Send trigger pulse
   digitalWrite(trig, LOW);
   delayMicroseconds(2);
   digitalWrite(trig, HIGH);
   delayMicroseconds(10);
   digitalWrite(trig, LOW);
 
-  // Read echo pulse duration
   long duration = pulseIn(echo, HIGH);
-
-  // Calculate distance (in cm)
   int distance = (duration / 2) / 29.1;
-  return distance; // Return the measured distance
+  return distance;
 }
 
 float measure_ph() {
-  // Collect multiple pH sensor readings
   float avgValue = 0;
   for (int i = 0; i < 10; i++) {
     buf[i] = analogRead(33); // pH sensor connected to GPIO 33
@@ -70,14 +61,12 @@ float measure_ph() {
   for (int i = 0; i < 10; i++) {
     avgValue += buf[i];
   }
-  float pHvol = avgValue * 3.3 / 4095 / 10; // Convert ADC value to voltage
-  float phValue = -5.70 * pHvol + calibration_value; // Calculate pH value
+  float pHvol = avgValue * 3.3 / 4095 / 10;
+  float phValue = -5.70 * pHvol + calibration_value;
   return phValue;
 }
 
-void loop() {
-  delay(2000); // Wait before the loop starts
-
+void move_arm_to_dip() {
   // Move base servo from 0 to 110 degrees
   for (int pos = 0; pos <= 110; pos += 1) {
     base_servo.write(pos);
@@ -97,58 +86,13 @@ void loop() {
   }
 
   // Dip the sensor to measure pH
-  for (int pos = 135; pos <= 150; pos += 1) { 
+  for (int pos = 135; pos <= 150; pos += 1) {
     right_servo.write(pos); // Move right servo to dipping position
-    delay(23);              
+    delay(23);
   }
-  
-  // Measure pH while dipped
-  float phValue = measure_ph();
-
-  // Measure temperature
-  float temperature = 0.0;
-  for (int i = 0; i < 30; i++) {
-    sensors.requestTemperatures(); // Request the sensor to read the temperature
-    temperature = sensors.getTempCByIndex(0); // Store the latest reading
-    delay(5); // Short delay between readings for stability
-  }
-
-  // Measure distance
-  int distance = measure_distance();
-
-  // Print values to the serial monitor
-  Serial.print("pH Value: ");
-  Serial.println(phValue);
-
-  Serial.print("Temperature: ");
-  Serial.println(temperature);
-
-  Serial.print("Distance: ");
-  Serial.println(distance);
-
-// Relay control logic with debug
-if (temperature <= 20.0 || temperature >= 33.0 || phValue <= 6.5 || phValue >= 9.0) {
-    Serial.println("Critical condition: Temperature or pH out of range.");
-    Serial.println("Turning relay1 ON...");
-    digitalWrite(relay1, HIGH); // Turn ON the relay
-    break; // Exit the if block and continue to the next part of the loop
-  }
-
-if (distance >= 13) {
-    Serial.println("Desired water level reached. Turning relay1 OFF.");
-    digitalWrite(relay1, LOW); // Turn OFF the relay
-  }
-Serial.println("Turning relay2 ON");
-
-do {
- digitalWrite(relay2, HIGH);
- }while (distance !=3);
-
-if(distance <=3){
-  digitalWrite(relay2, LOW);
 }
 
-
+void return_arm_to_initial() {
   // Return arm to its initial position
   for (int pos = 30; pos <= 170; pos++) {
     left_servo.write(pos);
@@ -164,4 +108,69 @@ if(distance <=3){
     base_servo.write(pos);
     delay(23);
   }
+}
+
+void loop() {
+  // Move the robotic arm to dip the sensor
+  move_arm_to_dip();
+
+  // Measure pH and temperature
+  float phValue = measure_ph();
+  sensors.requestTemperatures();
+  float temperature = sensors.getTempCByIndex(0);
+
+  // Measure distance
+  int distance = measure_distance();
+
+  // Print values to the serial monitor
+  Serial.print("pH Value: ");
+  Serial.println(phValue);
+  Serial.print("Temperature: ");
+  Serial.println(temperature);
+  Serial.print("Distance: ");
+  Serial.println(distance);
+
+  // State 1: Drain water if critical condition
+  if (temperature <= 20.0 || temperature >= 33.0 ) { // we removed the PH condition, to added later
+    Serial.println("Critical condition detected. Draining water...");
+    digitalWrite(relay1, HIGH); // Start draining
+    digitalWrite(relay2, LOW);  // Ensure filling is off
+
+    // Wait until the water is fully drained
+    while (distance < 13) {
+      distance = measure_distance();
+      Serial.print("Draining... Current distance: ");
+      Serial.println(distance);
+      delay(500); // Small delay to avoid overloading the loop
+    }
+
+    // Stop draining
+    Serial.println("Tank drained. Stopping relay1.");
+    digitalWrite(relay1, LOW);
+  }
+
+  // State 2: Fill water
+  if (distance >= 13) {
+    Serial.println("Starting to fill the tank...");
+    digitalWrite(relay2, HIGH); // Start filling
+
+    // Wait until the tank is fully filled
+    while (distance > 3) {
+      distance = measure_distance();
+      Serial.print("Filling... Current distance: ");
+      Serial.println(distance);
+      delay(500); // Small delay for stability
+    }
+
+    // Stop filling
+    Serial.println("Tank filled. Stopping relay2.");
+    digitalWrite(relay2, LOW);
+  }
+
+  // Move robotic arm back to the initial position
+  return_arm_to_initial();
+
+  // Wait before restarting the loop
+  Serial.println("Rechecking conditions...");
+  delay(2000);
 }
