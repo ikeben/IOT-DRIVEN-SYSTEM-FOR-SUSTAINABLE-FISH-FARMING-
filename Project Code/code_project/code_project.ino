@@ -137,7 +137,7 @@ void loop() {
     digitalWrite(relay2, LOW);  // Ensure filling is off
 
     // Wait until the water is fully drained
-    while (distance < 13) {
+    while (distance < 14) {
       distance = measure_distance();
       Serial.print("Draining... Current distance: ");
       Serial.println(distance);
@@ -155,7 +155,7 @@ void loop() {
     digitalWrite(relay2, HIGH); // Start filling
 
     // Wait until the tank is fully filled
-    while (distance > 3) {
+    while (distance > 2) {
       distance = measure_distance();
       Serial.print("Filling... Current distance: ");
       Serial.println(distance);
