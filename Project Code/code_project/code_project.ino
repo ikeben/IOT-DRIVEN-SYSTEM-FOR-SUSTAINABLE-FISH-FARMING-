@@ -5,11 +5,11 @@
 #include <ESP32Servo.h>
 
 // WiFi credentials
-const char* ssid = "*****";
-const char* password = "*******";
+const char* ssid = "**********";
+const char* password = "*****";
 
 // Django server URL
-const char* serverURL = "http://***.***.***.***:8000/api/sensor-readings/";
+const char* serverURL = "*****/api/sensor-readings/";
 
 // Pin definitions
 #define trig 19
@@ -35,6 +35,7 @@ int buf[10];
 int basePosition = 0;
 int rightPosition = 60;
 int leftPosition = 170;
+int pos;
 
 // Function prototypes
 void connectToWiFi();
@@ -135,44 +136,61 @@ float measure_ph() {
 }
 
 void move_arm_to_dip() {
-  for (int pos = 0; pos <= 110; pos++) {
-    base_servo.write(pos);
-    basePosition = pos;
-    delay(23);
+  for (pos = 0; pos <= 110; pos += 1) { 
+  base_servo.write(pos);       
+  basePosition = pos;       
+  delay(20); }    
+
+delay(1000);
+ 
+for (pos = 90; pos <= 140; pos += 1) { 
+  right_servo.write(pos);  
+  rightPosition = pos;           
+  delay(20);
   }
-  for (int pos = 60; pos <= 135; pos++) {
-    right_servo.write(pos);
-    rightPosition = pos;
-    delay(23);
+
+  delay(1000);
+
+ for (pos = 170; pos >= 90; pos -= 1) { 
+  left_servo.write(pos); 
+  leftPosition = pos;             
+  delay(20);
   }
-  for (int pos = 170; pos >= 30; pos--) {
-    left_servo.write(pos);
-    leftPosition = pos;
-    delay(23);
-  }
-  for (int pos = 135; pos <= 150; pos++) {
-    right_servo.write(pos);
-    rightPosition = pos;
-    delay(23);
-  }
+  delay(1000);
+
+for (pos = 140; pos <= 175; pos += 1) { 
+   right_servo.write(pos);
+    rightPosition = pos;              
+    delay(20);}
 }
 
 void return_arm_to_initial() {
-  for (int pos = 30; pos <= 170; pos++) {
-    left_servo.write(pos);
-    leftPosition = pos;
-    delay(23);
+  for (pos = 175; pos >= 140; pos -= 1) { 
+  right_servo.write(pos);
+  rightPosition = pos;            
+  delay(20);   
+ }
+ delay(1000);
+  for (pos = 140; pos >= 90; pos -= 1) { 
+  right_servo.write(pos);
+  rightPosition = pos;            
+  delay(20);   
+ }
+
+ delay(1000);
+for (pos = 90; pos <= 170; pos += 1) { 
+left_servo.write(pos);
+leftPosition = pos;              
+delay(20);
   }
-  for (int pos = 150; pos >= 60; pos--) {
-    right_servo.write(pos);
-    rightPosition = pos;
-    delay(23);
-  }
-  for (int pos = 110; pos >= 0; pos--) {
+
+delay(1000);
+ for (pos = 110; pos >= 0; pos -= 1) { 
     base_servo.write(pos);
-    basePosition = pos;
-    delay(23);
+    basePosition = pos;            
+    delay(23);                      
   }
+
 }
 
 void setup() {
@@ -210,20 +228,25 @@ void loop() {
 
     float phValue = measure_ph();
     sensors.requestTemperatures();
+    float temperatureC; // Declare temperatureC outside the loop
     for (int i = 0; i < 25; i++) {
-      float temperatureC = sensors.getTempCByIndex(0);
-      delay(5);
+        temperatureC = sensors.getTempCByIndex(0); // Update its value inside the loop
+        delay(5);
     }
-    temperature = temperatureC;
+    float temperature = temperatureC; // Now you can use it here
+
     
 
     sendReadingsToServer("measurement", phValue, temperature, waterLevel);
 
     // State 1: Drain water if critical condition
-  if (temperature <= 20.0 || temperature >= 33.0 || phValue <=5 ) { // we removed the PH condition, to added later
+  if (temperature <= 20.0 || temperature >= 33.0 ) { // we removed the PH condition, to added later
     Serial.println("Critical condition detected. Draining water...");
     digitalWrite(relay1, HIGH); // Start draining
     digitalWrite(relay2, LOW);  // Ensure filling is off
+
+    // Send "draining" activity
+    sendReadingsToServer("water_draining");
 
     // Wait until the water is fully drained
     while (distance < 14) {
@@ -247,12 +270,14 @@ void loop() {
     Serial.println("Starting to fill the tank...");
     digitalWrite(relay2, HIGH); // Start filling
 
+    // Send "filling" activity
+    sendReadingsToServer("water_filling");
+
     // Wait until the tank is fully filled
     while (distance > 2) {
         distance = measure_distance();
         int waterLevel = map(distance, 3, 13, 100, 0); // Convert to percentage
         sendContinuousData(waterLevel, distance, basePosition, rightPosition, leftPosition);
-
         Serial.print("Filling... Current distance: ");
         Serial.println(distance);
         delay(500); // Small delay for stability
