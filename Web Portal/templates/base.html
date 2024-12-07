@@ -1,0 +1,700 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta
+      name="description"
+      content="IoT-Driven System for Sustainable Fish Farming"
+    />
+    <meta
+      name="keyword"
+      content="IoT-Driven System for Sustainable Fish Farming"
+    />
+    <link
+      rel="icon"
+      href="https://www.wrraptheme.com/templates/luno/assets/img/favicon.ico"
+      type="image/x-icon"
+    />
+    <!-- Favicon-->
+    <title>AquaGuard</title>
+    <!-- Application vendor css url -->
+    <!-- project css file  -->
+    <link rel="stylesheet" href="{% static 'assets/css/luno-style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'assets/vendor/jspreadsheet/style.css' %}"
+    />
+    <!-- Jquery Core Js -->
+    <script src="{% static 'assets/js/plugins.js' %}"></script>
+  </head>
+
+  <body class="layout-1" data-luno="theme-blue">
+    {% block content %} {% endblock %}
+
+    <!-- Modal: Setting -->
+    <div class="modal fade" id="SettingsModal" tabindex="-1">
+      <div
+        class="modal-dialog modal-dialog-vertical right-side modal-dialog-scrollable"
+      >
+        <div class="modal-content">
+          <div class="px-xl-4 modal-header">
+            <h5 class="modal-title">Theme Setting</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="px-xl-4 modal-body custom_scroll">
+            <!-- start: Light/dark -->
+            <div class="card fieldset border setting-mode mb-4">
+              <span class="fieldset-tile bg-card"
+                >Light/Dark & Contrast Layout</span
+              >
+              <div class="c_radio d-flex text-center">
+                <label class="m-1 theme-switch" for="theme-switch">
+                  <input type="checkbox" id="theme-switch" />
+                  <span class="card p-2">
+                    <img
+                      class="img-fluid"
+                      src="https://www.wrraptheme.com/templates/luno/assets/img/dark-version.svg"
+                      alt="Dark Mode"
+                    />
+                  </span>
+                </label>
+                <label class="m-1 theme-dark" for="theme-dark">
+                  <input type="checkbox" id="theme-dark" />
+                  <span class="card p-2">
+                    <img
+                      class="img-fluid"
+                      src="https://www.wrraptheme.com/templates/luno/assets/img/dark-theme.svg"
+                      alt="Theme Dark Mode"
+                    />
+                  </span>
+                </label>
+                <label
+                  class="m-1 theme-high-contrast"
+                  for="theme-high-contrast"
+                >
+                  <input type="checkbox" id="theme-high-contrast" />
+                  <span class="card p-2">
+                    <img
+                      class="img-fluid"
+                      src="https://www.wrraptheme.com/templates/luno/assets/img/high-version.svg"
+                      alt="High Contrast"
+                    />
+                  </span>
+                </label>
+                <label class="m-1 theme-rtl" for="theme-rtl">
+                  <input type="checkbox" id="theme-rtl" />
+                  <span class="card p-2">
+                    <img
+                      class="img-fluid"
+                      src="https://www.wrraptheme.com/templates/luno/assets/img/rtl-version.svg"
+                      alt="RTL Mode!"
+                    />
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Jquery Page Js -->
+    <!-- Jquery Page Js -->
+    <script src="{% static 'assets/js/theme.js' %}"></script>
+    <!-- Plugin Js -->
+    <script src="{% static 'assets/js/bundle/apexcharts.bundle.js' %}"></script>
+    <!-- Vendor Script -->
+    <script src="{% static 'assets/js/bundle/apexcharts.bundle.js' %}"></script>
+    <script src="{% static 'assets/bundles/jspreadsheet.bundle.js' %}"></script>
+    <script>
+// Measurements Taken Chart (pH and Temperature)
+var apexwc1 = {
+  chart: {
+    type: "area",
+    height: 50,
+    sparkline: {
+      enabled: true,
+    },
+  },
+  series: [
+    {
+      data: [],
+    },
+  ],
+  stroke: {
+    width: 1,
+  },
+  fill: {
+    type: "gradient",
+    gradient: {
+      gradientToColors: ["var(--chart-color1)"],
+      shadeIntensity: 2,
+      opacityFrom: 0.7,
+      opacityTo: 0.2,
+      stops: [0, 100],
+    },
+  },
+  colors: ["var(--chart-color1)"],
+  dataLabels: {
+    enabled: false,
+  },
+};
+const chart1 = new ApexCharts(document.querySelector("#apex-wc-1"), apexwc1);
+chart1.render();
+
+// Total Water Drained Chart
+var apexwc2 = {
+  chart: {
+    type: "area",
+    height: 50,
+    sparkline: {
+      enabled: true,
+    },
+  },
+  series: [
+    {
+      data: [],
+    },
+  ],
+  stroke: {
+    width: 1,
+  },
+  fill: {
+    type: "gradient",
+    gradient: {
+      gradientToColors: ["var(--chart-color2)"],
+      shadeIntensity: 2,
+      opacityFrom: 0.7,
+      opacityTo: 0.2,
+      stops: [0, 100],
+    },
+  },
+  colors: ["var(--chart-color2)"],
+  dataLabels: {
+    enabled: false,
+  },
+};
+const chart2 = new ApexCharts(document.querySelector("#apex-wc-2"), apexwc2);
+chart2.render();
+
+// Total Water Filled Chart
+var apexwc3 = {
+  chart: {
+    type: "area",
+    height: 50,
+    sparkline: {
+      enabled: true,
+    },
+  },
+  series: [
+    {
+      data: [],
+    },
+  ],
+  stroke: {
+    width: 1,
+  },
+  fill: {
+    type: "gradient",
+    gradient: {
+      gradientToColors: ["var(--chart-color3)"],
+      shadeIntensity: 2,
+      opacityFrom: 0.7,
+      opacityTo: 0.2,
+      stops: [0, 100],
+    },
+  },
+  colors: ["var(--chart-color3)"],
+  dataLabels: {
+    enabled: false,
+  },
+};
+const chart3 = new ApexCharts(document.querySelector("#apex-wc-3"), apexwc3);
+chart3.render();
+
+// Function to update all charts with new data
+function updateCharts() {
+  fetch("/api/sensor-readings/")
+    .then((response) => response.json())
+    .then((data) => {
+      // Filter readings with non-null pH and temperature
+      const filteredData = data.filter(
+        (reading) => reading.ph !== null && reading.temperature !== null
+      );
+
+      // Extract data for pH and temperature chart
+      const phTempValues = filteredData.map((reading) => reading.ph + reading.temperature);
+      const timestamps = filteredData.map((reading) =>
+        new Date(reading.timestamp).toLocaleString()
+      );
+
+      // Update Measurements Taken chart
+      chart1.updateOptions({
+        series: [
+          {
+            data: phTempValues,
+          },
+        ],
+        xaxis: {
+          categories: timestamps,
+        },
+      });
+
+      // Update Water Drained Chart
+      const waterDrained = data.map((reading) => (reading.activity_type === "water_drained" ? 1 : 0));
+      const waterDrainedTimestamps = data.map((reading) =>
+        new Date(reading.timestamp).toLocaleString()
+      );
+
+      chart2.updateOptions({
+        series: [
+          {
+            data: waterDrained,
+          },
+        ],
+        xaxis: {
+          categories: waterDrainedTimestamps,
+        },
+      });
+
+      // Update Water Filled Chart
+      const waterFilled = data.map((reading) => (reading.activity_type === "water_filled" ? 1 : 0));
+      const waterFilledTimestamps = data.map((reading) =>
+        new Date(reading.timestamp).toLocaleString()
+      );
+
+      chart3.updateOptions({
+        series: [
+          {
+            data: waterFilled,
+          },
+        ],
+        xaxis: {
+          categories: waterFilledTimestamps,
+        },
+      });
+    })
+    .catch((error) => console.error("Error fetching data:", error));
+}
+
+// Fetch data every 5 seconds
+setInterval(updateCharts, 5000);
+
+// Initial data fetch
+updateCharts();
+
+
+      
+
+      document.addEventListener("DOMContentLoaded", async function () {
+        // pH Chart Instance
+        const phChartOptions = {
+          series: [{ name: "pH Levels", data: [] }],
+          colors: ["#FF4560"], // Red for pH chart
+          chart: {
+            type: "bar",
+            height: 280,
+            toolbar: { show: false },
+          },
+          xaxis: {
+            categories: [], // Placeholder for timestamps
+            title: { text: "Time" },
+          },
+          yaxis: { title: { text: "pH Level" } },
+          dataLabels: { enabled: false },
+          tooltip: {
+            y: { formatter: (val) => `${val.toFixed(2)} pH` },
+          },
+        };
+        const phChartInstance = new ApexCharts(
+          document.querySelector("#phChart"),
+          phChartOptions
+        );
+        phChartInstance.render();
+
+        // Temperature Chart Instance
+        const temperatureChartOptions = {
+          series: [{ name: "Temperature", data: [] }],
+          chart: {
+            type: "bar", // Green histogram
+            height: 280,
+            toolbar: { show: false },
+          },
+          colors: ["#00E396"], // Green for temperature chart
+          xaxis: {
+            categories: [], // Placeholder for timestamps
+            title: { text: "Time" },
+          },
+          yaxis: { title: { text: "Temperature (°C)" } },
+          dataLabels: { enabled: false },
+          tooltip: {
+            y: { formatter: (val) => `${val.toFixed(2)} °C` },
+          },
+        };
+        const temperatureChartInstance = new ApexCharts(
+          document.querySelector("#temperatureChart"),
+          temperatureChartOptions
+        );
+        temperatureChartInstance.render();
+
+        // Combined Sensor Chart (pH and Temperature)
+        const sensorChartOptions = {
+          series: [
+            { name: "pH Level", data: [] },
+            { name: "Temperature (°C)", data: [] },
+          ],
+          chart: {
+            height: 280,
+            type: "line",
+            toolbar: { show: false },
+            zoom: { enabled: false },
+          },
+          colors: ["#FF4560", "#00E396"], // pH: red, Temperature: green
+          xaxis: {
+            categories: [], // Placeholder for time data
+            title: { text: "Time" },
+          },
+          yaxis: [
+            { title: { text: "pH Level" } },
+            { opposite: true, title: { text: "Temperature (°C)" } },
+          ],
+          dataLabels: { enabled: false },
+          stroke: {
+            width: [3, 3],
+            curve: "smooth",
+          },
+          tooltip: {
+            shared: true,
+            intersect: false,
+          },
+        };
+        const sensorChartInstance = new ApexCharts(
+          document.querySelector("#sensorChart"),
+          sensorChartOptions
+        );
+        sensorChartInstance.render();
+
+        // Fetch and update data for all charts
+        async function fetchSensorData() {
+          const response = await fetch("/api/sensor-readings/"); // Replace with your API endpoint
+          const data = await response.json();
+
+          // Filter out null values for pH and Temperature
+          const filteredData = data.filter(
+            (reading) => reading.ph !== null && reading.temperature !== null
+          );
+
+          // Extract the latest 10 readings for pH and Temperature
+          const latestPhData = filteredData.slice(-10);
+          const phValues = latestPhData.map((reading) => reading.ph);
+          const phTimestamps = latestPhData.map((reading) =>
+            new Date(reading.timestamp).toLocaleString()
+          );
+
+          const latestTempData = filteredData.slice(-10);
+          const tempValues = latestTempData.map(
+            (reading) => reading.temperature
+          );
+          const tempTimestamps = latestTempData.map((reading) =>
+            new Date(reading.timestamp).toLocaleString()
+          );
+
+          // Extract the latest 20 readings for the combined Sensor Chart
+          const latestSensorData = filteredData.slice(-20);
+          const sensorTimestamps = latestSensorData.map((d) =>
+            new Date(d.timestamp).toLocaleString()
+          );
+          const sensorPhData = latestSensorData.map((d) => d.ph);
+          const sensorTempData = latestSensorData.map((d) => d.temperature);
+
+          // Update pH Chart
+          phChartInstance.updateOptions({
+            series: [{ name: "pH Levels", data: phValues }],
+            xaxis: { categories: phTimestamps },
+          });
+
+          // Update Temperature Chart
+          temperatureChartInstance.updateOptions({
+            series: [{ name: "Temperature", data: tempValues }],
+            xaxis: { categories: tempTimestamps },
+          });
+
+          // Update Combined Sensor Chart
+          sensorChartInstance.updateOptions({
+            series: [
+              { name: "pH Level", data: sensorPhData },
+              { name: "Temperature (°C)", data: sensorTempData },
+            ],
+            xaxis: { categories: sensorTimestamps },
+          });
+        }
+
+        // Initialize Water Level Chart
+        const waterLevelChartOptions = {
+          series: [0], // Initial water level percentage (0%)
+          chart: {
+            height: 280,
+            type: "radialBar",
+          },
+          plotOptions: {
+            radialBar: {
+              hollow: {
+                size: "70%",
+              },
+              dataLabels: {
+                name: {
+                  show: true,
+                  fontSize: "22px",
+                  color: "#777",
+                  offsetY: -10,
+                  formatter: () => "Water Level",
+                },
+                value: {
+                  show: true,
+                  fontSize: "36px",
+                  formatter: (val) => `${val.toFixed(0)}%`,
+                },
+              },
+            },
+          },
+          colors: ["#008FFB"], // Customize color for the water level
+          stroke: {
+            lineCap: "round",
+          },
+          labels: ["Water Level"],
+        };
+
+        const waterLevelChartInstance = new ApexCharts(
+          document.querySelector("#waterLevelChart"),
+          waterLevelChartOptions
+        );
+        waterLevelChartInstance.render();
+
+        // Function to update the water level chart
+        function updateWaterLevel() {
+          fetch("/api/sensor-readings/")
+            .then((response) => response.json())
+            .then((data) => {
+              const latestReading = data[data.length - 1];
+              if (latestReading && latestReading.water_level !== undefined) {
+                // Use the water level directly as sent by the ESP32
+                const waterLevelPercentage = latestReading.water_level;
+
+                // Update the chart with the new water level
+                waterLevelChartInstance.updateSeries([waterLevelPercentage]);
+              } else {
+                console.warn("No water level data available.");
+              }
+            })
+            .catch((error) =>
+              console.error("Error fetching water level:", error)
+            );
+        }
+
+        function drawRoboticArm(base, right, left) {
+          const canvas = document.getElementById("roboticArmCanvas");
+          if (!canvas) {
+            console.error("Robotic Arm canvas element not found.");
+            return;
+          }
+
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            console.error("Failed to get canvas context.");
+            return;
+          }
+
+          // Clear the canvas
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // Canvas center
+          const centerX = canvas.width / 2;
+          const centerY = canvas.height / 2;
+
+          // Base Circle
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, 40, 0, 2 * Math.PI);
+          ctx.fillStyle = "#333";
+          ctx.fill();
+          ctx.closePath();
+
+          // Right Arm
+          const rightArmLength = 100;
+          const rightArmAngle = (right * Math.PI) / 180; // Convert to radians
+          const rightX = centerX + rightArmLength * Math.cos(rightArmAngle);
+          const rightY = centerY - rightArmLength * Math.sin(rightArmAngle);
+
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.lineTo(rightX, rightY);
+          ctx.lineWidth = 6;
+          ctx.strokeStyle = "#008FFB";
+          ctx.stroke();
+          ctx.closePath();
+
+          // Left Arm
+          const leftArmLength = 100;
+          const leftArmAngle = (left * Math.PI) / 180; // Convert to radians
+          const leftX = centerX + leftArmLength * Math.cos(leftArmAngle);
+          const leftY = centerY - leftArmLength * Math.sin(leftArmAngle);
+
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.lineTo(leftX, leftY);
+          ctx.lineWidth = 6;
+          ctx.strokeStyle = "#FF4560";
+          ctx.stroke();
+          ctx.closePath();
+
+          // Draw the arm labels
+          ctx.font = "16px Arial";
+          ctx.fillStyle = "#000";
+          ctx.fillText("Base", centerX - 20, centerY + 10);
+          ctx.fillText("Right Arm", rightX - 40, rightY - 10);
+          ctx.fillText("Left Arm", leftX - 40, leftY - 10);
+        }
+
+        function updateRoboticArm() {
+          fetch("/api/sensor-readings/")
+            .then((response) => response.json())
+            .then((data) => {
+              const latestReading = data[data.length - 1];
+              if (latestReading && latestReading.arm_position) {
+                const {
+                  base = 0,
+                  right = 0,
+                  left = 0,
+                } = latestReading.arm_position;
+
+                // Draw the robotic arm with the latest position
+                drawRoboticArm(base, right, left);
+              } else {
+                console.warn("No arm position data available.");
+              }
+            })
+            .catch((error) =>
+              console.error("Error fetching robotic arm data:", error)
+            );
+        }
+
+        // Fetch data every 5 seconds
+        setInterval(() => {
+          fetchSensorData();
+          updateWaterLevel();
+          updateRoboticArm();
+        }, 5000);
+
+        // Initial fetch
+        fetchSensorData();
+      });
+
+      
+
+      function fetchActivities() {
+    fetch('/get_activities_data/')
+        .then(response => response.json())
+        .then(data => {
+            const activitiesContainer = document.querySelector('.timeline'); // Match the template selector
+
+            // Clear existing activities
+            activitiesContainer.innerHTML = '';
+
+            if (data.readings.length > 0) {
+                data.readings.forEach(reading => {
+                    const activityHtml = `
+                        <div class="timeline-item ms-2 ti-${reading.type}">
+                            <div class="d-flex">
+                                <div class="flex-fill ms-3">
+                                    <div class="mb-1">
+                                        <strong>${reading.description}</strong>
+                                    </div>
+                                    <span class="d-flex text-muted mb-3 small">
+                                        ${reading.timestamp}
+                                        <a class="ms-2" href="#" title=""><strong>System</strong></a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>`;
+                    activitiesContainer.innerHTML += activityHtml;
+                });
+            } else {
+                activitiesContainer.innerHTML = '<p>No activities available at this time.</p>';
+            }
+        })
+        .catch(error => console.error('Error fetching activities:', error));
+}
+
+
+function fetchTable() {
+    fetch('/get_table_data/')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector('.card-table tbody'); // Match the template selector
+
+            // Clear existing rows
+            tableBody.innerHTML = '';
+
+            if (data.readings.length > 0) {
+                data.readings.forEach(reading => {
+                    const rowHtml = `
+                        <tr>
+                            <td>${reading.timestamp}</td>
+                            <td>${reading.ph}</td>
+                            <td>${reading.temperature}</td>
+                            <td>${reading.activity}</td>
+                        </tr>`;
+                    tableBody.innerHTML += rowHtml;
+                });
+            } else {
+                tableBody.innerHTML = '<tr><td colspan="4" class="text-center">No readings available.</td></tr>';
+            }
+        })
+        .catch(error => console.error('Error fetching table data:', error));
+}
+
+
+// Periodically update Activities and Table
+setInterval(() => {
+    fetchActivities();
+    fetchTable();
+}, 5000); // Update every 5 seconds
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetchActivities();
+    fetchTable();
+});
+
+
+
+
+
+
+function fetchBertInsights() {
+    fetch('/get_bert_insights/')
+        .then(response => response.json())
+        .then(data => {
+            const insightsContainer = document.getElementById('bert-insights');
+            insightsContainer.innerHTML = `<p>${data.insights}</p>`;
+        })
+        .catch(error => {
+            console.error('Error fetching BERT insights:', error);
+        });
+}
+
+// Automatically fetch insights every 5 minutes
+setInterval(fetchBertInsights, 300000);
+document.addEventListener('DOMContentLoaded', fetchBertInsights);
+
+    </script>
+  </body>
+</html>

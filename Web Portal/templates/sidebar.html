@@ -1,0 +1,108 @@
+<!-- start: sidebar -->
+<div class="sidebar p-2 py-md-3">
+  <div class="container-fluid">
+    <!-- sidebar: title-->
+    <div class="title-text d-flex align-items-center mb-4 mt-1">
+      <h4 class="sidebar-title mb-0 flex-grow-1"><span>Admin</span></h4>
+    </div>
+    <!-- sidebar: menu list -->
+    <div class="main-menu flex-grow-1">
+      <ul class="menu-list">
+        <li class="divider py-2 lh-sm">
+          <span class="small">MAIN</span><br />
+        </li>
+        <li>
+          <a
+            class="m-link {% if request.path == '/dashboard/' %}active{% endif %}"
+            href="{% url 'dashboard' %}"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6zm5-.793V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"
+              />
+              <path
+                class="fill-secondary"
+                fill-rule="evenodd"
+                d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"
+              />
+            </svg>
+            <span class="ms-2">My Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a
+            class="m-link {% if request.path == '/table/' %}active{% endif %}"
+            href="{% url 'table' %}"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M15.985 8.50001H8.20698L2.70698 14C3.82973 14.9906 5.20793 15.6461 6.68482 15.8922C8.1617 16.1383 9.678 15.9649 11.0613 15.3919C12.4445 14.8189 13.6392 13.8692 14.5095 12.6508C15.3797 11.4325 15.8916 9.99434 15.985 8.50001ZM1.99998 13.292C1.00944 12.1693 0.353862 10.7911 0.107801 9.31418C-0.138261 7.83729 0.0350724 6.32099 0.608086 4.93774C1.1811 3.55448 2.1308 2.35979 3.34916 1.48954C4.56752 0.619291 6.00565 0.108414 7.49998 0.0150146V7.79302L1.99998 13.293V13.292Z"
+              />
+              <path
+                class="fill-secondary"
+                d="M8.5 7.50001V0.0150146C10.4452 0.136897 12.279 0.964622 13.6572 2.34279C15.0354 3.72097 15.8631 5.5548 15.985 7.50001H8.5Z"
+              />
+            </svg>
+            <span class="ms-2">Spreadsheet</span>
+          </a>
+        </li>
+        <li>
+          <a
+            class="m-link {% if request.path == '/activities/' %}active{% endif %}"
+            href="{% url 'activities' %}"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path d="M0 3H16V4H0V3Z" />
+              <path d="M9 1H14V6H9V1Z" />
+              <path d="M0 13H16V14H0V13Z" />
+              <path d="M9 11H14V16H9V11Z" />
+              <path class="fill-secondary" d="M0 8H16V9H0V8Z" />
+              <path class="fill-secondary" d="M2 6H7V11H2V6Z" />
+            </svg>
+            <span class="ms-2">Activities</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!-- sidebar: footer link -->
+    <!-- sidebar: footer link -->
+    <ul class="menu-list nav navbar-nav flex-row text-center menu-footer-link">
+      <li class="nav-item flex-fill p-2">
+        <a
+          class="d-inline-block w-100 color-400"
+          href="https://www.wrraptheme.com/templates/luno/auth-signin.html"
+          title="sign-out"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path d="M7.5 1v7h1V1h-1z" />
+            <path
+              class="fill-secondary"
+              d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812z"
+            />
+          </svg>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<!-- start: body area -->
+<div class="wrapper">
+  {% include 'header.html' %}
+  <!-- start: page body -->
+  <div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+      <div class="card p-md-4 p-2">
+        <div class="row-title mb-2 d-flex justify-content-between">
+          <h5 class="fw-light mb-0">
+            Logs<span class="fw-bold ms-2">({{ total_activities }})</span>
+          </h5>
+        </div>
+        <div class="timeline">
+          <p>Loading activities...</p>
+        </div>      
+      </div>
+    </div>
+  </div>
+  <!-- start: page footer -->
+  {% include 'footer.html' %}
+</div>
+{% endblock %}
